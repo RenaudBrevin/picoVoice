@@ -1,9 +1,9 @@
 var countValue = document.getElementById("count");
 var colorPart = document.querySelectorAll(".color-part");
 var container = document.querySelector(".container");
+var add = document.querySelector(".add");
 var start = document.querySelector("#start");
 var result = document.querySelector("#result");
-var wrapper = document.querySelector(".wrapper");
 
 var colors = {
     vert: {
@@ -24,19 +24,20 @@ var colors = {
     },
 };
 
+
+
 let randomColors = [];
 let pathGeneratorBool = false;
-let count,
-    clickCount = 0;
+let count, click = 0;
 
 start.addEventListener("click", () => {
     count = 0;
-    clickCount = 0;
+    click = 0;
     randomColors = [];
     pathGeneratorBool = false;
-    wrapper.classList.remove("hide");
+    add.classList.remove("hide");
     container.classList.add("hide");
-    pathGenerate();
+    colorChoice();
 
     var speech = true;
     window.SpeechRecognition = window.webkitSpeechRecognition;
@@ -63,11 +64,12 @@ start.addEventListener("click", () => {
         }
 });
 
-function pathGenerate() {
+
+function colorChoice() {
     randomColors.push(randomvalue(colors));
     count = randomColors.length;
     pathGeneratorBool = true;
-    pathDecide(count);
+    decide(count);
 }
 
 function randomvalue(obj) {
@@ -75,7 +77,7 @@ function randomvalue(obj) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function pathDecide(count) {
+async function decide(count) {
     countValue.innerText = count;
     for (let i of randomColors) {
         let basicColor = document.querySelector(`.${i}`);
@@ -99,21 +101,21 @@ colorPart.forEach((element) => {
     if (pathGeneratorBool) {
         return false;
     }
-    if (e.target.classList[0] == randomColors[clickCount]) {
+    if (e.target.classList[0] == randomColors[click]) {
         e.target.style.backgroundColor = `${
-        colors[randomColors[clickCount]]["new"]
+        colors[randomColors[click]]["new"]
     }`;
     await delay(500);
 
     e.target.style.backgroundColor = `${
-        colors[randomColors[clickCount]]["basic"]
+        colors[randomColors[click]]["basic"]
     }`;
 
-    clickCount += 1;
+    click ++;
 
-    if (clickCount == count) {
-        clickCount = 0;
-        pathGenerate();
+    if (click == count) {
+        click = 0;
+        colorChoice();
     }
     } else {
         lose();
@@ -137,7 +139,7 @@ function lose() {
     result.innerHTML = 'Votre scrore : ' + count;
     result.classList.remove("hide");
     container.classList.remove("hide");
-    wrapper.classList.add("hide");
+    add.classList.add("hide");
     start.innerText = "Rejouer";
     start.classList.remove("hide");
 };
